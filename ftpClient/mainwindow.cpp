@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QTextCodec>
 #include <QDebug>
+#include <QStringList>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,6 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
     myT->moveToThread(thread);
     thread->start();
 
+    QStringList << "文件名" << "文件大小" << "是否是文件夹" << endl;
+    ui
+
+    connect(myT,&myThread::objectNameChanged,this,showFileTable);
 
 }
 
@@ -27,4 +32,10 @@ MainWindow::~MainWindow()
 void MainWindow::on_linkServer_clicked()
 {
     myT->initSocket();
+}
+
+void MainWindow::showFileTable(char *name, short type, long long size)
+{
+
+
 }

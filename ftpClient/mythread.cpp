@@ -8,11 +8,6 @@ myThread::myThread(QObject *parent) : QObject(parent)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));//设置中文不乱码
     memset(&addrClient,0,sizeof(addrClient));
     memset(&addrClient,0,sizeof(addrServer));
-    FD_ZERO(&readfds);
-    FD_ZERO(&writefds);
-    FD_SET(sockClient,&readfds);
-
-
 }
 void myThread::initSocket()
 {
@@ -44,27 +39,10 @@ void myThread::initSocket()
     }
     
     
-    while(1)
-    {
-        tempReadfds = readfds;
-
-        int res = select(0,&tempReadfds,&writefds,NULL,0);
-        if(res == 0)
-        {
-            continue;
-        }
-        else if(res > 0)
-        {
-            //有相应
-            //编写读数据;
-            dealReadfd();
-
-        }
-
-        else{
-            //发生错误
-        }
-    }
+   while(1)
+   {
+       dealReadfd();
+   }
 
 
 }
@@ -72,31 +50,30 @@ void myThread::initSocket()
 
 void myThread::dealReadfd()
 {
-    for(int i=0; i < tempReadfds.fd_count;i++)
+
+    //服务器发来数据
+    dateDir tempDateDir;
+    DateHeader dateHeader;
+    int rec = recv(sockClient,(char*)&dateHeader,sizeof(dateHeader),0);//...,0下载，>出消息，《0，报错
+    qDebug() << QString::fromLocal8Bit("接受数据头") << endl;
+    qDebug() << dateHeader.cmd << dateHeader.dateLength << endl;
+    if(rec == 0)
     {
+       //服务器推出
+    }
+    else if(rec > 0)
+    {
+       int rec = recv(sockClient,(char*)&tempDateDir + sizeof(dateHeader),sizeof(tempDateDir) - sizeof(dateHeader),0);
+       emit showFileInfo(tempDateDir.filePath,tempDateDir.fileType,tempDateDir.fileSize);
 
-            //服务器发来数据
-           dateDir tempDateDir;
-           DateHeader dateHeader;
-           int rec = recv(tempReadfds.fd_array[i],(char*)&dateHeader,dateHeader.dateLength,0);//...,0下载，>出消息，《0，报错
-           if(rec == 0)
-           {
-               //服务器推出
-//                       qDebug() << "client exit!" << endl;
-//                       SOCKET sockTemp = tempReadfds.fd_array[i];
-//                       FD_CLR(tempReadfds.fd_array[i],&readfds);
-//                       closesocket(sockTemp);
-           }
-           else if(rec > 0)
-           {
-               int rec = recv(tempReadfds.fd_array[i],(char*)&tempDateDir + dateHeader.dateLength,tempDateDir.dateLength - dateHeader.dateLength,0);
-               qDebug() << "server's send message："  << endl;
-               qDebug() << tempDateDir.fileName << tempDateDir.fileType << endl;
-               //下面进行消息分类
-
-           }
-           else{
-               //报错,出现错误，wsagetlasterror();
-           }
+       qDebug() << QString::fromLocal8Bit("接受数据身子")  << endl;
+       qDebug() <<  "filename: " << tempDateDir.fileName
+                 << "fileType:" << tempDateDir.fileType
+                 << "filepath:" << tempDateDir.filePath
+                 << "filesize:" << tempDateDir.fileSize << endl;
+       //下面进行消息分类
+    }
+    else{
+       //报错,出现错误，wsagetlasterror();
     }
 }

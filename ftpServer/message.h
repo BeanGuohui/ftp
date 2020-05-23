@@ -22,7 +22,8 @@ struct dateDir:public DateHeader
     }
     char fileName[255];
     char filePath[255];
-    int fileType;//文件类型，文件1，其他0；
+    short fileType;//文件类型，文件1，其他0；
+    long long int fileSize;
 };
 
 

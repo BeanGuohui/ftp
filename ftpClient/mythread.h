@@ -8,7 +8,10 @@
 #include <QFileInfo>
 #include <winsock2.h>
 #include <windows.h>
-
+#include <QMainWindow>
+namespace Ui {
+class MainWindow;
+}
 class myThread : public QObject
 {
     Q_OBJECT
@@ -18,14 +21,12 @@ public:
     void dealReadfd();
 
 signals:
-
+     void showFileInfo(char*, short,long long int);
 public slots:
-private:
-    fd_set readfds;/*检查是否有可读的socket*/
-    fd_set writefds; /*检查是否有可写的socket*/
 
-    fd_set tempReadfds;
-    fd_set tempWritefds;
+
+private:
+
     SOCKET sockClient;
     SOCKADDR_IN addrClient;
     SOCKADDR_IN addrServer;

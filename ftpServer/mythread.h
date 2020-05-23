@@ -20,7 +20,9 @@ public slots:
        void initSocket();
 public:
        bool threadIsRun;//判断进程是否关闭
-       void getFileInfo(char *);//获取文件夹下的所有内容
+       void getFileInfo(QString );//获取文件夹下的所有内容
+public:
+       QString shareFilePath;
 private:
        SOCKET sockClient;
        SOCKET sockServer;

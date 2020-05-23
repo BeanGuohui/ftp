@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
+#include<string.h>
 myThread::myThread(QObject *parent) : QObject(parent)
 {
     threadIsRun = true;
@@ -62,6 +63,7 @@ void myThread::initSocket()
 
                     FD_SET(sockClient,&readfds);
                     qDebug() << "IP: " << ntohl(addrClient.sin_addr.S_un.S_addr) << endl;
+                    getFileInfo(shareFilePath);
 
                 }
                 else{
@@ -94,7 +96,7 @@ void myThread::initSocket()
         }
     }
 }
-void myThread::getFileInfo(char *filePath)
+void myThread::getFileInfo(QString filePath)
 {
     QDir dir(filePath);
     if(!dir.exists())
@@ -114,11 +116,24 @@ void myThread::getFileInfo(char *filePath)
             i++;
             continue;
         }
-
-
-        qDebug() << fileInfo.fileName() << fileInfo.size() ;//<< tempTime << endl;
-
-
+        dateDir tempDateDir;
+        if(fileInfo.isDir())
+            tempDateDir.fileType = 1;
+        else
+            tempDateDir.fileType = 0;
+        const char *temp = fileInfo.fileName().toStdString().c_str();
+        //sprintf(tempDateDir.fileName,"%s",temp);
+        //memcpy(tempDateDir.fileName,"我",sizeof("我'"));
+        //不知道为什么用filename就是传不过去，换成path就可以传过去了
+        //tempDateDir.fileName = temp.c_str();
+        //strcpy(tempDateDir.fileName, temp.c_str());
+        //strcpy(tempDateDir.fileName, "123");
+        //sprintf(tempDateDir.fileSize,"%d",fileInfo.size());
+        memcpy(tempDateDir.filePath,temp,strlen(temp));
+        tempDateDir.fileSize = fileInfo.size();
+        send(sockClient,(char *)&tempDateDir,sizeof(tempDateDir),0);
+        //发送文件列表
+        qDebug() << "send file : " << tempDateDir.fileName << tempDateDir.filePath <<  tempDateDir.fileSize << endl;
         i++;
     }
     while(i<list.size());

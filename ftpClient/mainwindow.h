@@ -21,6 +21,7 @@ public:
 
 private slots:
     void on_linkServer_clicked();
+    void showFileTable(char*,short,long long int);
 
 private:
     Ui::MainWindow *ui;
