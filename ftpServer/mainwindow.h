@@ -19,8 +19,13 @@ public:
     ~MainWindow();
 
 public slots:
-    void closeWindow();
+    virtual void closeEvent();
 
+
+private slots:
+    void on_pushButton_3_clicked();
+
+    void on_choseShareDir_clicked();
 
 private:
     Ui::MainWindow *ui;

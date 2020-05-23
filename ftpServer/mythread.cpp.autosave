@@ -114,11 +114,16 @@ void myThread::getFileInfo(char *filePath)
             i++;
             continue;
         }
-
-
-        qDebug() << fileInfo.fileName() << fileInfo.size() ;//<< tempTime << endl;
-
-
+        dateDir tempDateDir;
+        if(fileInfo.isDir())
+            tempDateDir.fileType = 1;
+        else
+            tempDateDir.fileType = 0;
+        tempDateDir.fileName = fileInfo.fileName();
+        tempDateDir.fileSize = fileInfo.size();
+        send(sockClient,&tempDateDir,sizeof(tempDateDir),0);
+        //发送文件列表
+        qDebug() << "send file : " << tempDateDir.fileName << tempDateDir.fileSize << endl;
         i++;
     }
     while(i<list.size());

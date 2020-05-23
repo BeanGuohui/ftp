@@ -38,9 +38,9 @@
                  <widget class="QLineEdit" name="shareFilePath"/>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_2">
+                 <widget class="QPushButton" name="choseShareDir">
                   <property name="text">
-                   <string>共享</string>
+                   <string>选择共享目录</string>
                   </property>
                  </widget>
                 </item>
@@ -51,8 +51,6 @@
               <widget class="QTableWidget" name="showFileTB"/>
              </item>
             </layout>
-            <zorder>widget</zorder>
-            <zorder>pushButton_2</zorder>
             <zorder>widget</zorder>
             <zorder>label</zorder>
             <zorder>showFileTB</zorder>

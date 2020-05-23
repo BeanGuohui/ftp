@@ -30,7 +30,8 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-    mythread.h
+    mythread.h \
+    message.h
 
 FORMS += \
         mainwindow.ui

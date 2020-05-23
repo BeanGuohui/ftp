@@ -1,10 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include <QThread>
+#include "mythread.h"
 
 #include <QMainWindow>
-#include <winsock2.h>
-#pragma comment( lib, "ws2_32.lib" )
-#include <windows.h>
+
 
 namespace Ui {
 class MainWindow;
@@ -19,12 +19,14 @@ public:
     ~MainWindow();
     void initSocket();
 
+private slots:
+    void on_linkServer_clicked();
+
 private:
     Ui::MainWindow *ui;
-    SOCKET sockClient;
-    SOCKADDR_IN addrClient;
-    SOCKADDR_IN addrServer;
-    WSADATA wsaData;
+    QThread *thread;
+    myThread *myT;
+
 };
 
 #endif // MAINWINDOW_H

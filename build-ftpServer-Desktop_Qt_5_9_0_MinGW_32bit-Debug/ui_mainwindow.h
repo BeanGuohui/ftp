@@ -44,7 +44,7 @@ public:
     QWidget *widget;
     QHBoxLayout *horizontalLayout;
     QLineEdit *shareFilePath;
-    QPushButton *pushButton_2;
+    QPushButton *choseShareDir;
     QTableWidget *showFileTB;
     QWidget *widget_4;
     QVBoxLayout *verticalLayout_3;
@@ -106,10 +106,10 @@ public:
 
         horizontalLayout->addWidget(shareFilePath);
 
-        pushButton_2 = new QPushButton(widget);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        choseShareDir = new QPushButton(widget);
+        choseShareDir->setObjectName(QStringLiteral("choseShareDir"));
 
-        horizontalLayout->addWidget(pushButton_2);
+        horizontalLayout->addWidget(choseShareDir);
 
 
         verticalLayout_2->addWidget(widget);
@@ -119,8 +119,6 @@ public:
 
         verticalLayout_2->addWidget(showFileTB);
 
-        widget->raise();
-        pushButton_2->raise();
         widget->raise();
         label->raise();
         showFileTB->raise();
@@ -204,7 +202,7 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", Q_NULLPTR));
         label->setText(QApplication::translate("MainWindow", "\345\205\261\344\272\253\347\233\256\345\275\225\357\274\232", Q_NULLPTR));
-        pushButton_2->setText(QApplication::translate("MainWindow", "\345\205\261\344\272\253", Q_NULLPTR));
+        choseShareDir->setText(QApplication::translate("MainWindow", "\351\200\211\346\213\251\345\205\261\344\272\253\347\233\256\345\275\225", Q_NULLPTR));
         label_2->setText(QApplication::translate("MainWindow", "\346\234\215\345\212\241\345\231\250\346\227\245\345\277\227\346\230\276\347\244\272\357\274\232", Q_NULLPTR));
         pushButton->setText(QApplication::translate("MainWindow", "\345\274\200\345\220\257\346\234\215\345\212\241", Q_NULLPTR));
         pushButton_3->setText(QApplication::translate("MainWindow", "\347\273\210\346\255\242\346\234\215\345\212\241", Q_NULLPTR));
