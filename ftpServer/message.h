@@ -6,7 +6,8 @@
 enum CMD{
     CMD_DIR,
     CMD_DELE,
-    CMD_DATA//用来指定传送数据或者发送数据的头
+    CMD_DATA,//用来指定传送数据或者发送数据的头
+    CMD_CDNEXT//进入下一层的消息
 };
 struct DateHeader
 {
@@ -26,7 +27,15 @@ struct dateDir:public DateHeader
     long long int fileSize;
 };
 
-
+struct cdNext:public DateHeader//客户端发来的进入下一层文件夹的请求
+{
+    cdNext(){
+        dateLength = sizeof(cdNext);
+        cmd = CMD_CDNEXT;
+    }
+    char fileName[100];
+    char filePath[100];
+};
 
 
 

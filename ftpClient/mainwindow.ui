@@ -29,7 +29,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTableView" name="showFile"/>
+           <widget class="QTableWidget" name="showFile"/>
           </item>
          </layout>
         </widget>
@@ -88,7 +88,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="cdNextDir">
          <property name="text">
           <string>进入此文件夹</string>
          </property>

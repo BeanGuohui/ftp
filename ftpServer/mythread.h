@@ -23,6 +23,7 @@ public:
        void getFileInfo(QString );//获取文件夹下的所有内容
 public:
        QString shareFilePath;
+       QString cdPath;
 private:
        SOCKET sockClient;
        SOCKET sockServer;

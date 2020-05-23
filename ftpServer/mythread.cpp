@@ -36,6 +36,7 @@ void myThread::initSocket()
     FD_ZERO(&writefds);
     FD_ZERO(&exceptfds);
     FD_SET(sockServer,&readfds);
+    cdPath = shareFilePath;
     while(threadIsRun)
     {
         fd_set tempReadfds = readfds;
@@ -80,9 +81,30 @@ void myThread::initSocket()
                    }
                    else if(rec > 0)
                    {
-                       int rec = recv(tempReadfds.fd_array[i],(char*)&tempDateDir + dateHeader.dateLength,tempDateDir.dateLength - dateHeader.dateLength,0);
-                       getFileInfo(tempDateDir.filePath);
-                       qDebug() << "接受的消息："  << endl;
+                       switch (dateHeader.cmd) {
+                       case CMD_CDNEXT:
+                           {
+                           cdNext tempCdNext;
+                           int rec = recv(tempReadfds.fd_array[i],(char*)&tempCdNext + sizeof(dateHeader),sizeof(tempCdNext) - sizeof(dateHeader),0);
+                           qDebug() << "tempCdfilename" << tempCdNext.fileName << endl;
+                           qDebug() << "tempCdfilename" << tempCdNext.filePath << endl;
+                           qDebug() << "tempCdfilename" << cdPath << endl;
+                           cdPath = cdPath + "/" +QString(tempCdNext.filePath);
+
+
+                           getFileInfo(cdPath);
+                           qDebug() << "client send path will in: " << cdPath << endl;
+                           break;
+                       }
+                       default://客户端连接上之后默认发送的文件列表
+                       {
+//                           int rec = recv(tempReadfds.fd_array[i],(char*)&tempDateDir + dateHeader.dateLength,tempDateDir.dateLength - dateHeader.dateLength,0);
+//                           getFileInfo(tempDateDir.filePath);
+//                           qDebug() << "接受的消息："  << endl;
+                           break;
+                       }
+                       }
+
                    }
                    else{
                        //报错,出现错误，wsagetlasterror();
@@ -129,7 +151,7 @@ void myThread::getFileInfo(QString filePath)
         //strcpy(tempDateDir.fileName, temp.c_str());
         //strcpy(tempDateDir.fileName, "123");
         //sprintf(tempDateDir.fileSize,"%d",fileInfo.size());
-        memcpy(tempDateDir.filePath,temp,strlen(temp));
+        memcpy(tempDateDir.filePath,temp,strlen(temp)+1);
         tempDateDir.fileSize = fileInfo.size();
         send(sockClient,(char *)&tempDateDir,sizeof(tempDateDir),0);
         //发送文件列表

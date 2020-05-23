@@ -21,7 +21,10 @@ public:
 
 private slots:
     void on_linkServer_clicked();
-    void showFileTable(char*,short,long long int);
+    void showFileTable(char*, short,long long);
+    void cdNextDir();
+signals:
+    void sendNextDir(QString);
 
 private:
     Ui::MainWindow *ui;

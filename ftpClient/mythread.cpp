@@ -1,13 +1,31 @@
 #include "mythread.h"
-#include "message.h"
 #include <QTextCodec>
 #include <QDebug>
+#include <iostream>
+#include <thread>
+using namespace std;
+void runsend(myThread *myThis)
+{
+    while(1)
+    {
+        if(myThis->issend == true)
+        {
+            send(myThis->sockClient,(char *)&(myThis->tempCdNext),sizeof(myThis->tempCdNext),0);//给服务器发送指令
+            qDebug() << "1111111111111111111111111111===============" << endl;
+            qDebug() << "myThis" << myThis->tempCdNext.fileName << "==" << myThis->tempCdNext.filePath << endl;
+            myThis->issend = false;
+            break;
+        }
+    }
+}
 
 myThread::myThread(QObject *parent) : QObject(parent)
 {
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));//设置中文不乱码
     memset(&addrClient,0,sizeof(addrClient));
     memset(&addrClient,0,sizeof(addrServer));
+    issend = false;
+
 }
 void myThread::initSocket()
 {
@@ -37,8 +55,8 @@ void myThread::initSocket()
         qDebug() << "sucess" << endl;
         //QMessageBox::information(this,QString::fromLocal8Bit("温馨提示"),QString::fromLocal8Bit("链接成功，请继续操作！"),QMessageBox::Ok);
     }
-    
-    
+    std::thread sendThread(runsend,this);
+    sendThread.detach();
    while(1)
    {
        dealReadfd();
@@ -76,4 +94,5 @@ void myThread::dealReadfd()
     else{
        //报错,出现错误，wsagetlasterror();
     }
+
 }
