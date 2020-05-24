@@ -89,7 +89,7 @@ void MainWindow::cdNextDir()
 
 void MainWindow::cdPreDir()
 {//加以判断是否已经是主目录了。
-    if(allPath.size() == 2)
+    if(allPath.size() == 1)
     {
         QMessageBox::information(this,"information",QString::fromLocal8Bit("这是主目录了"),QMessageBox::Ok);
         return ;
