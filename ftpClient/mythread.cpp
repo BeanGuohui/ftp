@@ -86,9 +86,12 @@ void myThread::dealReadfd()
         case CMD_DIR:
         {
             int rec = recv(sockClient,(char*)&tempDateDir + sizeof(dateHeader),sizeof(tempDateDir) - sizeof(dateHeader),0);
-            QThread::sleep(1);//还可以使用容器，等下一次性传入，避免数据乱入
-            emit showFileInfo(tempDateDir.fileName,tempDateDir.fileType,tempDateDir.fileSize,tempDateDir.filePath);
+            alltempDateDir.push_back(tempDateDir);
+            if(tempDateDir.fileType == 3)
+            {
 
+                emit showFileInfo(tempDateDir.fileName,tempDateDir.fileType,tempDateDir.fileSize,tempDateDir.filePath);
+            }
             qDebug() << "====================thread recv ==============================="  << endl;
             qDebug() <<  "filename: " << tempDateDir.fileName
                       << "fileType:" << tempDateDir.fileType

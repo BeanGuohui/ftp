@@ -71,6 +71,7 @@ void myThread::initSocket()
                     memcpy(tempMainDateDir.filePath,shareFilePath.toStdString().c_str(),strlen(shareFilePath.toStdString().c_str())+1);
                     tempMainDateDir.fileType = 1;
                     send(sockClient,(char *)&tempMainDateDir,sizeof(tempMainDateDir),0);
+                    qDebug() << "before connect: " << tempMainDateDir.fileName << tempMainDateDir.filePath << endl;
 
                     getFileInfo(shareFilePath);
 
@@ -198,4 +199,8 @@ void myThread::getFileInfo(QString filePath)
         i++;
     }
     while(i<list.size());
+    dateDir tempDateDir;
+    tempDateDir.fileType = 3;
+    send(sockClient,(char *)&tempDateDir,sizeof(tempDateDir),0);
+    qDebug() << "send file : " << tempDateDir.fileName << tempDateDir.filePath <<  tempDateDir.fileSize << endl;
 }

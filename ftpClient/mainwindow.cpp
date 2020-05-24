@@ -49,22 +49,40 @@ MainWindow::~MainWindow()
 
 void MainWindow::showFileTable(char *name, short type, long long int size,char *path)
 {
-
-    if(strcmp(name,"///") == 0)
+    int i = 0;
+    if(strcmp(myT->alltempDateDir.at(0).fileName,"///") == 0)
     {
-        allPath.push_back(QString(path));
-        allPath.push_back(QString(path));
-
-        return;
+        allPath.push_back(QString(myT->alltempDateDir.at(0).filePath));
+        allPath.push_back(QString(myT->alltempDateDir.at(0).filePath));
+        i = 1;
     }
-    qDebug() << "=================this is showtable file=========================="<< endl;
-    int row = ui->showFile->rowCount();
-    ui->showFile->insertRow(row);
-    ui->showFile->setItem(row,0,new QTableWidgetItem(name));
-    ui->showFile->setItem(row,1,new QTableWidgetItem(QString::number(size)));
-    ui->showFile->setItem(row,2,new QTableWidgetItem(QString::number(type)));
-    ui->showFile->setItem(row,3,new QTableWidgetItem(path));
-    qDebug() << "filename --------" << name <<endl;
+    for(; i < myT->alltempDateDir.size()-1;i++)//最后一个是文件读取结尾信号的标志
+    {
+        int row = ui->showFile->rowCount();
+        ui->showFile->insertRow(row);
+        ui->showFile->setItem(row,0,new QTableWidgetItem(myT->alltempDateDir.at(i).fileName));
+        ui->showFile->setItem(row,1,new QTableWidgetItem(QString::number(myT->alltempDateDir.at(i).fileSize)));
+        ui->showFile->setItem(row,2,new QTableWidgetItem(QString::number(myT->alltempDateDir.at(i).fileType)));
+        ui->showFile->setItem(row,3,new QTableWidgetItem(myT->alltempDateDir.at(i).filePath));
+        qDebug() << "filename --------" << name <<endl;
+    }
+    myT->alltempDateDir.clear();
+
+//    if(strcmp(name,"///") == 0)
+//    {
+//        allPath.push_back(QString(path));
+//        allPath.push_back(QString(path));
+
+//        return;
+//    }
+//    qDebug() << "=================this is showtable file=========================="<< endl;
+//    int row = ui->showFile->rowCount();
+//    ui->showFile->insertRow(row);
+//    ui->showFile->setItem(row,0,new QTableWidgetItem(name));
+//    ui->showFile->setItem(row,1,new QTableWidgetItem(QString::number(size)));
+//    ui->showFile->setItem(row,2,new QTableWidgetItem(QString::number(type)));
+//    ui->showFile->setItem(row,3,new QTableWidgetItem(path));
+//    qDebug() << "filename --------" << name <<endl;
 
 }
 
