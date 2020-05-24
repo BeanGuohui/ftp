@@ -14,8 +14,8 @@ void runsend(myThread *myThis)
             qDebug() << "1111111111111111111111111111===============" << endl;
             qDebug() << "myThis" << myThis->tempCdNext.fileName << "==" << myThis->tempCdNext.filePath << endl;
             myThis->issend = false;
-            break;
         }
+
     }
 }
 
@@ -74,7 +74,7 @@ void myThread::dealReadfd()
     DateHeader dateHeader;
     int rec = recv(sockClient,(char*)&dateHeader,sizeof(dateHeader),0);//...,0下载，>出消息，《0，报错
     qDebug() << QString::fromLocal8Bit("接受数据头") << endl;
-    qDebug() << dateHeader.cmd << dateHeader.dateLength << endl;
+    qDebug() << dateHeader.cmd << endl;
     if(rec == 0)
     {
        //服务器推出
@@ -82,7 +82,7 @@ void myThread::dealReadfd()
     else if(rec > 0)
     {
        int rec = recv(sockClient,(char*)&tempDateDir + sizeof(dateHeader),sizeof(tempDateDir) - sizeof(dateHeader),0);
-       emit showFileInfo(tempDateDir.filePath,tempDateDir.fileType,tempDateDir.fileSize);
+       emit showFileInfo(tempDateDir.fileName,tempDateDir.fileType,tempDateDir.fileSize,tempDateDir.filePath);
 
        qDebug() << QString::fromLocal8Bit("接受数据身子")  << endl;
        qDebug() <<  "filename: " << tempDateDir.fileName

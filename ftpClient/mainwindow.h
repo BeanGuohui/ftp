@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include <QThread>
 #include "mythread.h"
+#include <QVector>
 
 #include <QMainWindow>
 
@@ -21,8 +22,9 @@ public:
 
 private slots:
     void on_linkServer_clicked();
-    void showFileTable(char*, short,long long);
-    void cdNextDir();
+    void showFileTable(char*, short,long long,char*);
+    void cdNextDir();//进入选中文件夹
+    void cdPreDir();//返回上级目录
 signals:
     void sendNextDir(QString);
 
@@ -30,7 +32,7 @@ private:
     Ui::MainWindow *ui;
     QThread *thread;
     myThread *myT;
-
+    QVector<QString> allPath;
 };
 
 #endif // MAINWINDOW_H

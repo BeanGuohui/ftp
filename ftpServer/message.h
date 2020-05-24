@@ -1,8 +1,6 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-
-
 enum CMD{
     CMD_DIR,
     CMD_DELE,
@@ -11,14 +9,12 @@ enum CMD{
 };
 struct DateHeader
 {
-    int dateLength = sizeof(DateHeader);
     short cmd;//命令
 };
 //数据包
 struct dateDir:public DateHeader
 {
     dateDir(){
-        dateLength = sizeof(dateDir);
         cmd = CMD_DIR;
     }
     char fileName[255];
@@ -30,19 +26,11 @@ struct dateDir:public DateHeader
 struct cdNext:public DateHeader//客户端发来的进入下一层文件夹的请求
 {
     cdNext(){
-        dateLength = sizeof(cdNext);
         cmd = CMD_CDNEXT;
     }
     char fileName[100];
     char filePath[100];
 };
-
-
-
-
-
-
-
 
 
 

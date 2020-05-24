@@ -23,7 +23,7 @@ public:
     void dealReadfd();
 
 signals:
-     void showFileInfo(char*, short,long long);
+     void showFileInfo(char*, short,long long,char*);
 public slots:
      void sendNextDir(QString);
      //void runsend();

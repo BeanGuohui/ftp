@@ -81,7 +81,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="cdPreDir">
          <property name="text">
           <string>返回上级目录</string>
          </property>

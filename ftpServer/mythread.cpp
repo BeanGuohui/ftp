@@ -64,6 +64,13 @@ void myThread::initSocket()
 
                     FD_SET(sockClient,&readfds);
                     qDebug() << "IP: " << ntohl(addrClient.sin_addr.S_un.S_addr) << endl;
+                    //首先发送的是当前所在目录的目录名字
+                    dateDir tempMainDateDir;
+                    memcpy(tempMainDateDir.fileName,"///",strlen("///")+1);//以///为是否是当前主目录的依据
+                    memcpy(tempMainDateDir.filePath,shareFilePath.toStdString().c_str(),strlen(shareFilePath.toStdString().c_str())+1);
+                    tempMainDateDir.fileType = 1;
+                    send(sockClient,(char *)&tempMainDateDir,sizeof(tempMainDateDir),0);
+
                     getFileInfo(shareFilePath);
 
                 }
@@ -71,7 +78,7 @@ void myThread::initSocket()
                     //客户端发来请求
                    dateDir tempDateDir;
                    DateHeader dateHeader;
-                   int rec = recv(tempReadfds.fd_array[i],(char*)&dateHeader,dateHeader.dateLength,0);//...,0下载，>出消息，《0，报错
+                   int rec = recv(tempReadfds.fd_array[i],(char*)&dateHeader,sizeof(dateHeader),0);//...,0下载，>出消息，《0，报错
                    if(rec == 0)
                    {
                        qDebug() << "client exit!" << endl;
@@ -88,12 +95,10 @@ void myThread::initSocket()
                            int rec = recv(tempReadfds.fd_array[i],(char*)&tempCdNext + sizeof(dateHeader),sizeof(tempCdNext) - sizeof(dateHeader),0);
                            qDebug() << "tempCdfilename" << tempCdNext.fileName << endl;
                            qDebug() << "tempCdfilename" << tempCdNext.filePath << endl;
-                           qDebug() << "tempCdfilename" << cdPath << endl;
-                           cdPath = cdPath + "/" +QString(tempCdNext.filePath);
+                           //qDebug() << "tempCdfilename" << cdPath << endl;
 
-
-                           getFileInfo(cdPath);
-                           qDebug() << "client send path will in: " << cdPath << endl;
+                           getFileInfo(QString(tempCdNext.filePath));
+                           qDebug() << "client send path will in:================ " << tempCdNext.filePath << endl;
                            break;
                        }
                        default://客户端连接上之后默认发送的文件列表
@@ -120,6 +125,9 @@ void myThread::initSocket()
 }
 void myThread::getFileInfo(QString filePath)
 {
+
+    qDebug() << "sen file list ==========================" << endl;;
+    //下面发送的是当前目录所有的文件
     QDir dir(filePath);
     if(!dir.exists())
     {
@@ -143,15 +151,10 @@ void myThread::getFileInfo(QString filePath)
             tempDateDir.fileType = 1;
         else
             tempDateDir.fileType = 0;
-        const char *temp = fileInfo.fileName().toStdString().c_str();
-        //sprintf(tempDateDir.fileName,"%s",temp);
-        //memcpy(tempDateDir.fileName,"我",sizeof("我'"));
-        //不知道为什么用filename就是传不过去，换成path就可以传过去了
-        //tempDateDir.fileName = temp.c_str();
-        //strcpy(tempDateDir.fileName, temp.c_str());
-        //strcpy(tempDateDir.fileName, "123");
-        //sprintf(tempDateDir.fileSize,"%d",fileInfo.size());
-        memcpy(tempDateDir.filePath,temp,strlen(temp)+1);
+        const char *tempName = fileInfo.fileName().toStdString().c_str();
+        const char *tempPath = fileInfo.filePath().toStdString().c_str();
+        memcpy(tempDateDir.fileName,tempName,strlen(tempName)+1);
+        memcpy(tempDateDir.filePath,tempPath,strlen(tempPath)+1);
         tempDateDir.fileSize = fileInfo.size();
         send(sockClient,(char *)&tempDateDir,sizeof(tempDateDir),0);
         //发送文件列表
