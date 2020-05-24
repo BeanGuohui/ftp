@@ -1,11 +1,12 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
-
+#include <windows.h>
 enum CMD{
     CMD_DIR,
     CMD_DELE,
     CMD_DATA,//用来指定传送数据或者发送数据的头
-    CMD_CDNEXT//进入下一层的消息
+    CMD_CDNEXT,//进入下一层的消息
+    CMD_DOWNLOAD
 };
 struct DateHeader
 {
@@ -18,7 +19,7 @@ struct dateDir:public DateHeader
         cmd = CMD_DIR;
     }
     char fileName[255];
-    char filePath[255];
+    BYTE filePath[255];
     short fileType;//文件类型，文件1，其他0；
     long long int fileSize;
 };
@@ -30,6 +31,15 @@ struct cdNext:public DateHeader//客户端发来的进入下一层文件夹的�
     }
     char fileName[100];
     char filePath[100];
+};
+struct downFile:public DateHeader//想客户端发送文件
+{
+    downFile(){
+        cmd = CMD_DOWNLOAD;
+    }
+    int fileLength;//用来记录发送的长度，不然有乱码，并且会造成文件增大
+    char fileName[100];
+    BYTE fileDate[1024];
 };
 
 

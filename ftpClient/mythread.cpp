@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <iostream>
 #include <thread>
+#include <stdio.h>
 using namespace std;
 void runsend(myThread *myThis)
 {
@@ -81,14 +82,41 @@ void myThread::dealReadfd()
     }
     else if(rec > 0)
     {
-       int rec = recv(sockClient,(char*)&tempDateDir + sizeof(dateHeader),sizeof(tempDateDir) - sizeof(dateHeader),0);
-       emit showFileInfo(tempDateDir.fileName,tempDateDir.fileType,tempDateDir.fileSize,tempDateDir.filePath);
+        switch (dateHeader.cmd) {
+        case CMD_DIR:
+        {
+            int rec = recv(sockClient,(char*)&tempDateDir + sizeof(dateHeader),sizeof(tempDateDir) - sizeof(dateHeader),0);
+            QThread::sleep(1);//还可以使用容器，等下一次性传入，避免数据乱入
+            emit showFileInfo(tempDateDir.fileName,tempDateDir.fileType,tempDateDir.fileSize,tempDateDir.filePath);
 
-       qDebug() << QString::fromLocal8Bit("接受数据身子")  << endl;
-       qDebug() <<  "filename: " << tempDateDir.fileName
-                 << "fileType:" << tempDateDir.fileType
-                 << "filepath:" << tempDateDir.filePath
-                 << "filesize:" << tempDateDir.fileSize << endl;
+            qDebug() << "====================thread recv ==============================="  << endl;
+            qDebug() <<  "filename: " << tempDateDir.fileName
+                      << "fileType:" << tempDateDir.fileType
+                      << "filepath:" << tempDateDir.filePath
+                      << "filesize:" << tempDateDir.fileSize << endl;
+            qDebug() << "================================================================"  << endl;
+            break;
+        }
+        case CMD_DOWNLOAD:
+        {
+            char downloadFilepath[100] = "D:/downtest";
+
+            qDebug() << "=================CMD_DOWNLOAD download file =================" << endl;
+            //QThread::sleep(40);
+            downFile tempDownFile;
+            memset(tempDownFile.fileDate,'\0',sizeof(tempDownFile.fileDate));
+            int rec = recv(sockClient,(char*)&tempDownFile + sizeof(dateHeader),sizeof(tempDownFile) - sizeof(dateHeader),0);
+
+            sprintf(downloadFilepath,"%s/%s",downloadFilepath,tempDownFile.fileName);//可能乱码
+            FILE *fp = fopen(downloadFilepath,"a+b");
+            fwrite(tempDownFile.fileDate,sizeof(BYTE),tempDownFile.fileLength,fp);
+            fclose(fp);
+            break;
+        }
+        default:
+            break;
+        }
+
        //下面进行消息分类
     }
     else{

@@ -17,8 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     thread->start();
     connect(ui->linkServer,&QPushButton::clicked,myT,&myThread::initSocket);//链接服务器
     connect(ui->cdPreDir,&QPushButton::clicked,this,&MainWindow::cdPreDir);//返回上级目录
+    //connect(ui->downFile,&QPushButton::clicked,this,&MainWindow::sendDownFile);//发送给进程具体的下载信息
 
-
+    connect(ui->pbdownFile,&QPushButton::clicked,this,&MainWindow::sendDownFile);
 
     ui->showFile->setRowCount(0);
     ui->showFile->setColumnCount(4); //设置列数为5
@@ -56,13 +57,15 @@ void MainWindow::showFileTable(char *name, short type, long long int size,char *
 
         return;
     }
-    qDebug() << "charu==============" << endl;
+    qDebug() << "=================this is showtable file=========================="<< endl;
     int row = ui->showFile->rowCount();
     ui->showFile->insertRow(row);
-    ui->showFile->setItem(row,0,new QTableWidgetItem(QString(name)));
+    ui->showFile->setItem(row,0,new QTableWidgetItem(name));
     ui->showFile->setItem(row,1,new QTableWidgetItem(QString::number(size)));
     ui->showFile->setItem(row,2,new QTableWidgetItem(QString::number(type)));
-    ui->showFile->setItem(row,3,new QTableWidgetItem(QString(path)));
+    ui->showFile->setItem(row,3,new QTableWidgetItem(path));
+    qDebug() << "filename --------" << name <<endl;
+
 }
 
 void MainWindow::cdNextDir()
@@ -111,5 +114,29 @@ void MainWindow::cdPreDir()
     //QThread::sleep(2);
     ui->showFile->clearContents();//清空之前的表
     ui->showFile->setRowCount(0);
+    myT->issend = true;//开放发送消息
+}
+
+void MainWindow::sendDownFile()
+{
+    //默认下载的路径是在家目录下
+    qDebug() << "***********************************" <<endl;
+    qDebug() << "this is send" << endl;
+
+    QString type = ui->showFile->selectedItems().at(2)->text();
+    if(type.toInt() == 1)
+    {
+        QMessageBox::information(this,"error",QString::fromLocal8Bit("暂不支持下载文件夹!"),QMessageBox::Ok);
+        return;
+    }
+    QString selectFile = ui->showFile->selectedItems().at(0)->text();//获取选中行的文件名字
+    QString selectFilePath = ui->showFile->selectedItems().at(3)->text();//获取选中文件的路径
+    memcpy(myT->tempCdNext.fileName,selectFile.toStdString().c_str(),strlen(selectFile.toStdString().c_str())+1);
+    memcpy(myT->tempCdNext.filePath,selectFilePath.toStdString().c_str(),strlen(selectFilePath.toStdString().c_str())+1);
+    myT->tempCdNext.cmd = CMD_DOWNLOAD;
+    qDebug() << "=================this is download file=========================="<< endl;
+    qDebug() << "myTcdNext" << myT->tempCdNext.fileName << "=============" << myT->tempCdNext.filePath << endl;
+    qDebug() << "=================================================================" << endl;
+    //QThread::sleep(2);
     myT->issend = true;//开放发送消息
 }

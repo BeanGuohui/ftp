@@ -45,9 +45,10 @@ void MainWindow::on_choseShareDir_clicked()
 
 
     QString filePath = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-                 "/home", QFileDialog::ShowDirsOnly| QFileDialog::DontResolveSymlinks);
+                 "/home", QFileDialog::ShowDirsOnly| QFileDialog::DontResolveSymlinks);  
     myT->shareFilePath = filePath;
     qDebug() << filePath << endl;
+    ui->shareFilePath->setText(filePath);
     QDir dir(filePath);
     if(!dir.exists())
     {

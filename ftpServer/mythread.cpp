@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include<string.h>
+#include <stdio.h>
 myThread::myThread(QObject *parent) : QObject(parent)
 {
     threadIsRun = true;
@@ -79,6 +80,8 @@ void myThread::initSocket()
                    dateDir tempDateDir;
                    DateHeader dateHeader;
                    int rec = recv(tempReadfds.fd_array[i],(char*)&dateHeader,sizeof(dateHeader),0);//...,0下载，>出消息，《0，报错
+                   qDebug() << "recvinformation 83 row: " << dateHeader.cmd << endl;
+
                    if(rec == 0)
                    {
                        qDebug() << "client exit!" << endl;
@@ -90,7 +93,7 @@ void myThread::initSocket()
                    {
                        switch (dateHeader.cmd) {
                        case CMD_CDNEXT:
-                           {
+                       {
                            cdNext tempCdNext;
                            int rec = recv(tempReadfds.fd_array[i],(char*)&tempCdNext + sizeof(dateHeader),sizeof(tempCdNext) - sizeof(dateHeader),0);
                            qDebug() << "tempCdfilename" << tempCdNext.fileName << endl;
@@ -99,6 +102,39 @@ void myThread::initSocket()
 
                            getFileInfo(QString(tempCdNext.filePath));
                            qDebug() << "client send path will in:================ " << tempCdNext.filePath << endl;
+                           break;
+                       }
+                       case CMD_DOWNLOAD:
+                       {
+
+                           cdNext tempCdNext;
+                           downFile tempDownFile;
+                           int rec = recv(tempReadfds.fd_array[i],(char*)&tempCdNext + sizeof(dateHeader),sizeof(tempCdNext) - sizeof(dateHeader),0);
+                           qDebug() << "tempCdfilename" << tempCdNext.fileName << endl;
+
+                           strcpy(tempDownFile.fileName, tempCdNext.fileName);//有可能编码错误
+                           qDebug() << "tempDownLoad" << tempDownFile.fileName << endl;
+                           FILE *fp = fopen(tempCdNext.filePath,"rb");
+                            //QThread::sleep(20);
+                           memset(tempDownFile.fileDate,'\0',sizeof(tempDownFile.fileDate));
+                           while(1)
+                           {
+                               int n = fread(tempDownFile.fileDate,sizeof(BYTE),sizeof(tempDownFile.fileDate),fp);
+                               if(n < 0)
+                               {
+                                   fclose(fp);
+                                   qDebug() << "read error:";
+                                   return ;
+                               }
+                               else if(n == 0||n == NULL)
+                               {
+                                   break;
+                               }
+                               tempDownFile.fileLength = n;
+                               send(sockClient,(char *)&tempDownFile,sizeof(tempDownFile),0);
+
+                           }
+                           fclose(fp);
                            break;
                        }
                        default://客户端连接上之后默认发送的文件列表

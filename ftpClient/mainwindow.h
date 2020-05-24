@@ -25,6 +25,8 @@ private slots:
     void showFileTable(char*, short,long long,char*);
     void cdNextDir();//进入选中文件夹
     void cdPreDir();//返回上级目录
+public slots:
+    void sendDownFile();
 signals:
     void sendNextDir(QString);
 
